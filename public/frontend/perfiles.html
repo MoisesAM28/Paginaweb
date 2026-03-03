@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil de Usuario</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #5b7fff, #8ab6ff);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 450px;
+    margin: 60px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+h2 {
+    color: #333;
+}
+
+.profile-item {
+    text-align: left;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.profile-label {
+    font-weight: bold;
+    color: #444;
+}
+
+.qr {
+    margin-top: 15px;
+    padding: 10px;
+}
+
+.qr img {
+    width: 180px;
+    height: 180px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.btn {
+    display: block;
+    margin: 25px auto 0;
+    background: #5b7fff;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background: #4a6de0;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>Perfil del Usuario</h2>
+
+    <div id="profileData">
+        Cargando perfil...
+    </div>
+
+    <a href="index.html" class="btn">Volver</a>
+</div>
+
+
+<script>
+async function cargarPerfil() {
+
+    const token = localStorage.getItem("token");
+    const idUsuario = localStorage.getItem("id");
+    const tipo = localStorage.getItem("tipo"); // afiliado | usuario
+
+    if (!token) {
+        alert("No has iniciado sesión");
+        window.location.href = "login.html";
+        return;
+    }
+
+    // Obtener ID desde URL
+    const params = new URLSearchParams(window.location.search);
+    let perfilId = params.get("id") || idUsuario;
+
+    // Definir endpoint correcto
+    let endpoint =
+        tipo === "afiliado"
+            ? `http://localhost:3000/api/afiliados/perfil/${perfilId}`
+            : `http://localhost:3000/api/perfil/${perfilId}`;
+
+    try {
+        const res = await fetch(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            document.getElementById("profileData").innerHTML =
+                `<p>Error: ${data.error || data.mensaje}</p>`;
+            return;
+        }
+
+        // ===============================
+        // 👤 PERFIL DE USUARIO NORMAL
+        // ===============================
+        if (tipo !== "afiliado") {
+            document.getElementById("profileData").innerHTML = `
+                <div class="profile-item"><span class="profile-label">Nombre:</span> ${data.nombre}</div>
+                <div class="profile-item"><span class="profile-label">Correo:</span> ${data.correo}</div>
+                <div class="profile-item"><span class="profile-label">Cumpleaños:</span> ${data.cumpleanos || "—"}</div>
+                <div class="profile-item"><span class="profile-label">Rol:</span> ${data.rol}</div>
+                <div class="profile-item"><span class="profile-label">Escaneos QR:</span> ${data.veces_qr || 0}</div>
+
+                <div class="qr">
+                    <span class="profile-label">Código QR:</span><br>
+                    <img src="${data.qr_text}" alt="QR del usuario">
+                </div>
+            `;
+            return;
+        }
+        
+
+        // ===============================
+        // 🏪 PERFIL DE AFILIADO (TIENDA)
+        // ===============================
+        document.getElementById("profileData").innerHTML = `
+            <div class="profile-item"><span class="profile-label">Nombre comercial:</span> ${data.nombre_comercial}</div>
+            <div class="profile-item"><span class="profile-label">Categoría:</span> ${data.categoria}</div>
+            <div class="profile-item"><span class="profile-label">Descripción:</span> ${data.descripcion}</div>
+            <div class="profile-item"><span class="profile-label">Correo público:</span> ${data.email_publico}</div>
+            <div class="profile-item"><span class="profile-label">Teléfono:</span> ${data.telefono}</div>
+
+            <div class="profile-item">
+                <span class="profile-label">Página web:</span>
+                <a href="${data.pagina_web}" target="_blank">${data.pagina_web}</a>
+            </div>
+
+            <div class="profile-item"><span class="profile-label">Representante:</span> ${data.nombre_representante}</div>
+            <div class="profile-item"><span class="profile-label">Membresía:</span> ${data.nombre_membresia}</div>
+            <div class="profile-item"><span class="profile-label">Precio:</span> $${data.precio_membresia}</div>
+
+            <div class="profile-item">
+                <span class="profile-label">Beneficios:</span><br>
+                ${data.beneficios}
+            </div>
+        `;
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById("profileData").innerHTML =
+            "<p>Error de conexión con el servidor.</p>";
+    }
+}
+
+// 🔥 Ejecutar al cargar
+cargarPerfil();
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tiendas Afiliadas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f4f6fb;
+  color: #333;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #4f6dff, #7fa1ff);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* Grid de tiendas */
+.grid-tiendas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+/* Card tienda */
+.card-tienda {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.card-tienda:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+/* Logo */
+.logo-tienda {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4f6dff;
+}
+
+/* Nombre */
+.card-tienda h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+/* Categoría */
+.categoria {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 12px;
+}
+
+/* Descripción */
+.descripcion {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+/* Botón */
+.btn-ver {
+  background: #4f6dff;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.btn-ver:hover {
+  background: #3b55d8;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 25px;
+  font-size: 14px;
+  color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Tiendas Afiliadas</h1>
+  <p>Descubre negocios locales y promociones exclusivas</p>
+</header>
+
+<main class="container">
+
+  <div class="grid-tiendas">
+
+    <!-- TIENDA DE EJEMPLO -->
+    <div class="card-tienda">
+      <img src="https://via.placeholder.com/150" class="logo-tienda" alt="Logo tienda">
+      <h3>Nombre de la Tienda</h3>
+      <div class="categoria">Categoría</div>
+      <div class="descripcion">
+        Breve descripción del negocio afiliado. Aquí va información atractiva.
+      </div>
+      <a href="#" class="btn-ver">Ver tienda</a>
+    </div>
+
+    <!-- Puedes duplicar este bloque para más tiendas -->
+    
+  </div>
+
+</main>
+
+<footer>
+  © 2025 • Plataforma de Afiliados
+</footer>
+
+</body>
+</html>

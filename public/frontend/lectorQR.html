@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lector QR</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: #ffffff;
+            width: 360px;
+            padding: 25px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1f7f45;
+            font-size: 26px;
+        }
+
+        #lectorQR {
+            margin: 15px auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #resultado {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #145a32;
+            min-height: 20px;
+        }
+
+        .footer {
+            font-size: 12px;
+            margin-top: 20px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Escanear QR</h2>
+
+    <!-- Cámara -->
+    <div id="lectorQR" style="width: 300px;"></div>
+
+    <!-- Resultado -->
+    <p id="resultado"></p>
+
+    <p class="footer">Apunta la cámara hacia el código QR</p>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<script>
+// Crear el lector
+const html5QrCode = new Html5Qrcode("lectorQR");
+
+function onScanSuccess(decodedText) {
+    document.getElementById("resultado").textContent = "QR detectado: " + decodedText;
+
+    // Se detiene la cámara
+    html5QrCode.stop();
+
+    // ==============================
+    //  EXTRAER ID DEL PERFIL
+    // ==============================
+    try {
+        // Ejemplo de decodedText:
+        // http://localhost:3000/api/perfil/23
+        const partes = decodedText.split("/");
+        const id = partes[partes.length - 1];
+
+        // Validar que sea número
+        if (!isNaN(id)) {
+            // Incrementar contador
+            fetch("http://localhost:3000/api/qr-scan/" + id, {
+                method: "POST"
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Contador actualizado:", data);
+            })
+            .catch(err => console.error("Error actualizando contador:", err));
+        }
+
+    } catch (error) {
+        console.error("No se pudo procesar el QR:", error);
+    }
+}
+
+// Activar cámara (trasera si existe)
+Html5Qrcode.getCameras().then(cameras => {
+    if (cameras && cameras.length) {
+        let camaraId = cameras[0].id;
+        html5QrCode.start(
+            camaraId,
+            {
+                fps: 10,
+                qrbox: 200
+            },
+            onScanSuccess
+        );
+    }
+}).catch(err => {
+    console.error("Error al abrir cámara:", err);
+});
+</script>
+
+</body>
+</html>
