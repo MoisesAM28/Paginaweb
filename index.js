@@ -36,9 +36,9 @@ app.use("/api/afiliados", afiliadosRoutes);
 // ===============================
 // 3. SERVIR FRONTEND
 // ===============================
-app.use(express.static(path.join(__dirname, "frontend")));
+app.use(express.static(path.join(__dirname, "public", "frontend")));
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend/index.html"));
+    res.sendFile(path.join(__dirname, "public", "frontend", "index.html"));
 });
 
 
